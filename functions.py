@@ -9,6 +9,34 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 
+def run_algorithm(k, city_list, distance_matrix):
+    config.reset_globals()
+
+    if k == "greedy":
+        config.best_tour, config.best_distance = nearest_neighbor(city_list, distance_matrix)
+    elif k == "k_nearest":
+        k_nearest_neighbours(
+            3,
+            city_list[1:],
+            city_list[0],
+            [city_list[0]],
+            0,
+            distance_matrix,
+            city_list)
+    elif k == "bruteforce":
+        bruteforce(
+           city_list[1:],
+           city_list[0],
+           [city_list[0]],
+           0,
+           distance_matrix,
+           city_list)
+    else:
+        print("No algorithm executed.")
+
+    return config.best_tour, config.best_distance
+
+
 def nearest_neighbor(cities: List[str], distances: List[List[int]]) -> (List[str],int):
     unvisited = set(cities)
     current = cities[0]

@@ -1,0 +1,4 @@
+algorithms:
+  greedy: True
+  k_nearest: False
+  bruteforce: False
