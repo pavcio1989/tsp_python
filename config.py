@@ -1,11 +1,14 @@
-best_tour = []
-best_distance = 1000000
+import yaml
 
 
-def reset_globals():
-    global best_tour,best_distance
-    best_tour = []
-    best_distance = 1000000
+class Config:
+    def __init__(self):
+        with open('data.yml', 'r') as file:
+            use_case = yaml.safe_load(file)
 
+        self.use_case = use_case['data']['usecase']
 
-# TODO: Consider creating config class for data loading etc
+        self.file_path = {}
+
+        for filename in use_case['data']['filenames']:
+            self.file_path[filename] = f"../data/{self.use_case}/{use_case['data']['filenames'][filename]}"

@@ -1,24 +1,19 @@
-class CityGraph:
-    def __init__(self, input):
-        (
-            self.city_list,
-            self.city_latitudes,
-            self.city_longitudes,
-            self.distance_matrix
-        ) = (
-            self.get_city_data(input))
+from data_loader import DataLoader
 
-        # TODO: Make it global variables to be reset
+
+class CityGraph:
+    def __init__(self, config):
+        data_loader = DataLoader(config)
+
+        self.city_list = data_loader.get_city_list()
+        self.city_latitudes, self.city_longitudes = data_loader.get_coord()
+        self.distance_matrix = data_loader.get_distance_matrix()
+
         self.best_tour = []
         self.best_distance = 0
 
-    def get_city_data(self, input):
-        # TODO: Design data loading
-        cities = []  # config.get("cities")
-        lat = []  # config.get("latitudes")
-        lon = []  # config.get("longitudes")
-        dm = []  # config.get("distance_matrix")
-
-        return cities, lat, lon, dm
+    def reset_globals(self):
+        self.best_tour = []
+        self.best_distance = 1000000000
 
     # TODO: Add algorithms here

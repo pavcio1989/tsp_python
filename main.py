@@ -5,18 +5,23 @@ import time
 from functions import plot_simple_tour, run_algorithm
 
 # from archive.data_germany import city_list, city_longitudes, city_latitudes,distance_matrix
-from archive.data_48cities import city_list, city_longitudes, city_latitudes,distance_matrix
+# from archive.data_48cities import city_list, city_longitudes, city_latitudes,distance_matrix
 
 import config
 
 ####################
 # Setup
 ####################
-# TODO: Refactor designing pipelines
+# TODO: Refactor designing pipelines - possibly add to config
 with open('pipeline.yml', 'r') as file:
     pipeline_jobs = yaml.safe_load(file)
 
 print(pipeline_jobs['algorithms'])
+
+
+# TODO: Initiate config
+
+# TODO: Initiate city graph
 
 ####################
 #   Calculations   #
