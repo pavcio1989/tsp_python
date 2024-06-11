@@ -7,37 +7,21 @@ from functions import plot_simple_tour, run_algorithm
 # from archive.data_germany import city_list, city_longitudes, city_latitudes,distance_matrix
 # from archive.data_48cities import city_list, city_longitudes, city_latitudes,distance_matrix
 
-import config
+from config import Config
+from city_graph import CityGraph
+from pipeline import Pipeline
 
 ####################
-# Setup
+# Execution
 ####################
-# TODO: Refactor designing pipelines - possibly add to config
-with open('pipeline.yml', 'r') as file:
-    pipeline_jobs = yaml.safe_load(file)
 
-print(pipeline_jobs['algorithms'])
+config = Config()
 
+city_graph = CityGraph(config)
+pipeline = Pipeline(config)
+pipeline.run(city_graph)
 
-# TODO: Initiate config
-
-# TODO: Initiate city graph
-
-####################
-#   Calculations   #
-####################
-# TODO: Refactor
-for k, v in pipeline_jobs['algorithms'].items():
-    if v:
-        start = time.time()
-        print(f"Starting {k} algorithm...")
-        best_tour, best_distance = run_algorithm(k, city_list, distance_matrix)
-        exec_time = time.time() - start
-        print(f"Finishing {k} algorithm...")
-        print(f"{k} algorithm - execution time: {exec_time}")
-        print(f"{k} algorithm - results:")
-        print(f"Best tour: {best_tour}")
-        print(f"Best distance: {best_distance}")
+# TODO: Consider moving logging activities into separate class
 
 
 ################
@@ -60,4 +44,4 @@ df_reordered = df.copy().reindex(new_index)
 ##############
 # TODO: Refactor
 # plot_country_tour("Germany", df, df_reordered)
-plot_simple_tour(df_reordered)
+# plot_simple_tour(df_reordered)

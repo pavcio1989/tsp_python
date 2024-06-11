@@ -1,4 +1,4 @@
 algorithms:
   greedy: True
-  k_nearest: False
+  k_nearest: True
   bruteforce: False
