@@ -1,8 +1,5 @@
 import pandas as pd
-import yaml
-import time
-
-from functions import plot_simple_tour, run_algorithm
+import logging
 
 # from archive.data_germany import city_list, city_longitudes, city_latitudes,distance_matrix
 # from archive.data_48cities import city_list, city_longitudes, city_latitudes,distance_matrix
@@ -28,14 +25,14 @@ pipeline.run(city_graph)
 # Dataframe prep
 ################
 # TODO: Refactor
-df = pd.DataFrame({'city': city_list, 'latitude': city_latitudes, 'longitude': city_longitudes})
-# print(df)
-
-if config.best_tour[0] != config.best_tour[-1]:
-    new_index = [city_list.index(x) for x in config.best_tour + [city_list[0]]]
-else:
-    new_index = [city_list.index(x) for x in config.best_tour]
-df_reordered = df.copy().reindex(new_index)
+# df = pd.DataFrame({'city': city_list, 'latitude': city_latitudes, 'longitude': city_longitudes})
+# # print(df)
+#
+# if config.best_tour[0] != config.best_tour[-1]:
+#     new_index = [city_list.index(x) for x in config.best_tour + [city_list[0]]]
+# else:
+#     new_index = [city_list.index(x) for x in config.best_tour]
+# df_reordered = df.copy().reindex(new_index)
 # print(df_reordered)
 
 

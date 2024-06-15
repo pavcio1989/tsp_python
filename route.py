@@ -1,14 +1,20 @@
-from typing import List
+import matplotlib.pyplot as plt
+import plotly.express as px
+import geopandas as gpd
+import pandas as pd
+import networkx as nx
 
 from city_graph import CityGraph
+from utils import get_edges_from_matrix, get_distance_from_route
 
 
 class Route:
     def __init__(self, city_graph: CityGraph):
-        self.name = "Cities without route"
-        self.route = []
-        self.distance = 1000000000
         self.city_graph = city_graph
+        self.routes = {}
+
+        self._route = []
+        self._distance = 1000000000
 
     def greedy(self):
         cities = self.city_graph.city_list
@@ -29,14 +35,11 @@ class Route:
         tour.append(cities[0])
         total_distance = total_distance + distances[cities.index(current)][cities.index(cities[0])]
 
-        self.name = "Greedy"
-        self.route = tour
-        self.distance = total_distance
+        self._register_route("greedy", tour, total_distance)
 
         return
 
     def bruteforce(self):
-        self.name = "bruteforce"
         self._bruteforce(
             self.city_graph.city_list[1:],
             self.city_graph.city_list[0],
@@ -46,8 +49,9 @@ class Route:
             self.city_graph.city_list
         )
 
-    def k_nearest(self, k=4):
-        self.name = "k_nearest_neighbours"
+        self._register_route("bruteforce", self._route, self._distance)
+
+    def k_nearest(self, k=3):
         self._k_nearest_neighbours(
             k,
             self.city_graph.city_list[1:],
@@ -58,13 +62,31 @@ class Route:
             self.city_graph.city_list
         )
 
+        self._register_route("k_nearest", self._route, self._distance)
+
+    def nx_tsp(self):
+        dict_of_edges = get_edges_from_matrix(self.city_graph.distance_matrix)
+
+        G = nx.Graph()
+        G.add_weighted_edges_from(dict_of_edges)
+
+        tsp = nx.approximation.traveling_salesman_problem
+        route = tsp(G)
+
+        self._route = [self.city_graph.city_list[i] for i in route]
+        self._distance = get_distance_from_route(route, self.city_graph.distance_matrix)
+
+        self._register_route("nx_tsp", self._route, self._distance)
+
+        return
+
     def _bruteforce(self, remaining, vertex, path, weight, graph, city_list):
         if not remaining:
             # Add distance of returning to initial point
             final_weight = weight + graph[city_list.index(city_list[0])][city_list.index(vertex)]
-            if final_weight < self.distance:
-                self.distance = final_weight
-                self.route = path
+            if final_weight < self._distance:
+                self._distance = final_weight
+                self._route = path
         else:
             for i in remaining:
                 new_path = path + [i]
@@ -82,9 +104,9 @@ class Route:
         if not remaining:
             # Add distance of returning to initial point
             final_weight = weight + graph[city_list.index(city_list[0])][city_list.index(vertex)]
-            if final_weight < self.distance:
-                self.distance = final_weight
-                self.route = path
+            if final_weight < self._distance:
+                self._distance = final_weight
+                self._route = path
         else:
 
             iter_remaining = remaining
@@ -103,5 +125,46 @@ class Route:
                                            weight + graph[city_list.index(vertex)][city_list.index(i)],
                                            graph,
                                            city_list)
+
+        return
+
+    def draw_route(self):
+        _, df_for_drawing = self._reshaped_dfs()
+        fig = px.line(df_for_drawing, x="latitude", y="longitude", text="city")
+        fig.show()
+
+    def draw_route_gpd(self, country_name):
+        df_original, df_for_drawing = self._reshaped_dfs()
+        fig, ax = plt.subplots(figsize=(8, 6))
+        # plot map on axis
+        countries = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
+        countries[countries["name"] == country_name].plot(color="lightgrey", ax=ax)
+        # plot points
+        df_original.plot(x="longitude", y="latitude", kind="scatter", colormap="YlOrRd",
+                 title="", ax=ax)
+        df_for_drawing.plot(x="longitude", y="latitude", kind="line", colormap="YlOrRd",
+                 title="", ax=ax)
+        # add grid
+        plt.show()
+
+    def _reshaped_dfs(self):
+        df = pd.DataFrame({
+            'city': self.city_graph.city_list,
+            'latitude': self.city_graph.city_latitudes,
+            'longitude': self.city_graph.city_longitudes}
+        )
+
+        if self._route[0] != self._route[-1]:
+            new_index = [self.city_graph.city_list.index(x) for x in self._route + [self.city_graph.city_list[0]]]
+        else:
+            new_index = [self.city_graph.city_list.index(x) for x in self._route]
+
+        df_reordered = df.copy().reindex(new_index)
+        return df, df_reordered
+
+    def _register_route(self, name, route, distance):
+        self.routes[name] = {}
+        self.routes[name]["route"] = route
+        self.routes[name]["distance"] = distance
 
         return
