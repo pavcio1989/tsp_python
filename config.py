@@ -12,6 +12,8 @@ class Config:
         for filename in use_case['data']['filenames']:
             self.file_path[filename] = f"data/{self.use_case}/{use_case['data']['filenames'][filename]}"
 
+        self.max_nodes = use_case['data']['max_nodes']
+
         with open('pipeline.yml') as pipeline_file:
             algo_list = yaml.safe_load(pipeline_file)
 

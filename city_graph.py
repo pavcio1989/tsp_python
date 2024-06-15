@@ -9,5 +9,3 @@ class CityGraph:
         self.city_list = data_loader.get_city_list()
         self.city_latitudes, self.city_longitudes = data_loader.get_coord()
         self.distance_matrix = data_loader.get_distance_matrix()
-
-    # TODO: Add plotting method

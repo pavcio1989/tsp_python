@@ -1,7 +1,8 @@
 data:
-  usecase: germany
+  usecase: brazil
   filenames:
     city_list: city_names.txt
     coord: coord.txt
     distance_matrix: distance_matrix.txt
     best_tour: best_tour.txt
+  max_nodes: 12
