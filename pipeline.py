@@ -15,8 +15,9 @@ class Pipeline:
                 print(f"TSP Algorithm: {algorithm} | In scope: YES")
                 print(f"-- Initialize route:")
                 print(f"---- Start {algorithm}")
-                getattr(route, algorithm)()
+                _, algo_exec_time = getattr(route, algorithm)()
                 print(f"---- Best route: {route.routes[algorithm]["route"]} | \
 Best distance: {route.routes[algorithm]["distance"]}")
+                # print(f"Exec time: {algo_exec_time}")
             else:
                 print(f"TSP Algorithm: {algorithm} | In scope: NO")

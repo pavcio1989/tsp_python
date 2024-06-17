@@ -5,7 +5,7 @@ import pandas as pd
 import networkx as nx
 
 from city_graph import CityGraph
-from utils import get_edges_from_matrix, get_distance_from_route
+from utils import get_edges_from_matrix, get_distance_from_route, timeit
 
 
 class Route:
@@ -16,6 +16,7 @@ class Route:
         self._route = []
         self._distance = 1000000000
 
+    @timeit
     def greedy(self):
         cities = self.city_graph.city_list
         distances = self.city_graph.distance_matrix
@@ -39,6 +40,7 @@ class Route:
 
         return
 
+    @timeit
     def bruteforce(self):
         self._bruteforce(
             self.city_graph.city_list[1:],
@@ -51,6 +53,7 @@ class Route:
 
         self._register_route("bruteforce", self._route, self._distance)
 
+    @timeit
     def k_nearest(self, k=3):
         self._k_nearest_neighbours(
             k,
@@ -64,6 +67,7 @@ class Route:
 
         self._register_route("k_nearest", self._route, self._distance)
 
+    @timeit
     def nx_tsp(self):
         dict_of_edges = get_edges_from_matrix(self.city_graph.distance_matrix)
 
