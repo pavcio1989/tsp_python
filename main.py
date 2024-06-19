@@ -7,13 +7,15 @@ import logging
 from config import Config
 from city_graph import CityGraph
 from pipeline import Pipeline
+from logger import TSPLogger
 
 ####################
 # Execution
 ####################
 
+logger = TSPLogger(__name__, level=logging.DEBUG)
 config = Config()
-
+0
 city_graph = CityGraph(config)
 pipeline = Pipeline(config)
 pipeline.run(city_graph)
