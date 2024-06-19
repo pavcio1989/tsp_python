@@ -1,5 +1,5 @@
 algorithms:
   greedy: True
   k_nearest: True
-  bruteforce: True
+  bruteforce: False
   nx_tsp: True

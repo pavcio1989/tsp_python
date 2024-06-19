@@ -1,10 +1,15 @@
+import logging
+
 from city_graph import CityGraph
 from route import Route
+
+logger = logging.getLogger('tsp')
 
 
 class Pipeline:
     def __init__(self, config):
         self.algorithms = config.algorithms
+        self.output_folder = config.output_folder
 
     def run(self, city_graph: CityGraph):
 
@@ -12,12 +17,13 @@ class Pipeline:
 
         for algorithm in self.algorithms:
             if self.algorithms[algorithm]:
-                print(f"TSP Algorithm: {algorithm} | In scope: YES")
-                print(f"-- Initialize route:")
-                print(f"---- Start {algorithm}")
+                logger.info(f"TSP Algorithm: {algorithm} | In scope: YES")
+                logger.info(f"---- Start {algorithm}")
                 _, algo_exec_time = getattr(route, algorithm)()
-                print(f"---- Best route: {route.routes[algorithm]["route"]} | \
+                logger.info(f"---- Best route: {route.routes[algorithm]["route"]} | \
 Best distance: {route.routes[algorithm]["distance"]}")
-                # print(f"Exec time: {algo_exec_time}")
+                route.register_execution_time(algorithm, algo_exec_time)
             else:
-                print(f"TSP Algorithm: {algorithm} | In scope: NO")
+                logger.info(f"TSP Algorithm: {algorithm} | In scope: NO")
+
+        route.create_html_report(self.output_folder)

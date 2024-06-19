@@ -8,9 +8,9 @@ class Config:
 
         self.use_case = use_case['data']['usecase']
 
-        self.file_path = {}
-        for filename in use_case['data']['filenames']:
-            self.file_path[filename] = f"data/{self.use_case}/{use_case['data']['filenames'][filename]}"
+        self.input_file_path = {}
+        for filename in use_case['data']['input_files']:
+            self.input_file_path[filename] = f"{use_case['data']['input_folder']}/{self.use_case}/{use_case['data']['input_files'][filename]}"
 
         self.max_nodes = use_case['data']['max_nodes']
 
@@ -20,3 +20,5 @@ class Config:
         self.algorithms = {}
         for algo_name in algo_list['algorithms']:
             self.algorithms[algo_name] = algo_list['algorithms'][algo_name]
+
+        self.output_folder = use_case['data']['output_folder']

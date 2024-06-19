@@ -3,9 +3,9 @@ import pandas as pd
 
 class DataLoader:
     def __init__(self, config):
-        self.city_list_path = config.file_path['city_list']
-        self.coord_path = config.file_path['coord']
-        self.distance_matrix_path = config.file_path['distance_matrix']
+        self.city_list_path = config.input_file_path['city_list']
+        self.coord_path = config.input_file_path['coord']
+        self.distance_matrix_path = config.input_file_path['distance_matrix']
         self.max_nodes = config.max_nodes
 
     def get_city_list(self):

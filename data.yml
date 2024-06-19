@@ -1,8 +1,11 @@
 data:
   usecase: brazil
-  filenames:
+  input_folder: data/input
+  input_files:
     city_list: city_names.txt
     coord: coord.txt
     distance_matrix: distance_matrix.txt
     best_tour: best_tour.txt
-  max_nodes: 12
+  max_nodes: 18
+  output_folder: data/output
+

@@ -3,9 +3,13 @@ import plotly.express as px
 import geopandas as gpd
 import pandas as pd
 import networkx as nx
+import logging
+from datetime import datetime
 
 from city_graph import CityGraph
 from utils import get_edges_from_matrix, get_distance_from_route, timeit
+
+logger = logging.getLogger('tsp')
 
 
 class Route:
@@ -75,7 +79,7 @@ class Route:
         G.add_weighted_edges_from(dict_of_edges)
 
         tsp = nx.approximation.traveling_salesman_problem
-        route = tsp(G)
+        route = tsp(G, cycle=True)
 
         self._route = [self.city_graph.city_list[i] for i in route]
         self._distance = get_distance_from_route(route, self.city_graph.distance_matrix)
@@ -172,3 +176,45 @@ class Route:
         self.routes[name]["distance"] = distance
 
         return
+
+    def register_execution_time(self, name, exec_time):
+        self.routes[name]["exec_time"] = exec_time
+
+        return
+
+    def create_comparison_table(self):
+        rows_list = []
+        for key in self.routes.keys():
+            dict1 = {}
+            dict1.update([
+                ("algorithm_name", key),
+                ("execution_time", self.routes[key]["exec_time"]),
+                ("total_distance", self.routes[key]["distance"])
+            ])
+
+            rows_list.append(dict1)
+
+        df = pd.DataFrame(rows_list)
+
+        logger.info(f"---- Comparison table:\n {df}")
+
+        return df
+
+    def create_html_report(self, output_folder: str):
+        # writing HTML Content
+        heading = '<h1> Travelling Salesman Problem - implementations overview </h1>'
+        subheading = '<h2> Author: Paweł Pitera </h3>'
+
+        now = datetime.now()
+        current_time = now.strftime("%m/%d/%Y %H:%M:%S")
+        header = '<div class="top">' + heading + subheading + '</div>'
+        footer = '<div class="bottom"> <h3> This Report has been Generated on ' + current_time + ' </h3> </div> '
+        content = '<div class="table"> ' + self.create_comparison_table().to_html() + ' </div> '
+
+        # Concatenating everything to a single string
+        html = header + content + footer
+
+        # Writing the file
+        with open(f"{output_folder}/report.html", "w+") as file:
+            file.write(html)
+
