@@ -14,11 +14,13 @@ class Config:
 
         self.max_nodes = use_case['data']['max_nodes']
 
+        self.output_folder = use_case['data']['output_folder']
+
         with open('pipeline.yml') as pipeline_file:
-            algo_list = yaml.safe_load(pipeline_file)
+            pipeline_config = yaml.safe_load(pipeline_file)
 
         self.algorithms = {}
-        for algo_name in algo_list['algorithms']:
-            self.algorithms[algo_name] = algo_list['algorithms'][algo_name]
+        for algo_name in pipeline_config['algorithms']:
+            self.algorithms[algo_name] = pipeline_config['algorithms'][algo_name]
 
-        self.output_folder = use_case['data']['output_folder']
+        self.generate_report = pipeline_config['report']

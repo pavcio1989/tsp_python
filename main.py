@@ -13,11 +13,14 @@ from logger import TSPLogger
 # Execution
 ####################
 
-logger = TSPLogger(__name__, level=logging.DEBUG)
+logger = TSPLogger(__name__, level=logging.INFO)
+
 config = Config()
-0
+
 city_graph = CityGraph(config)
+
 pipeline = Pipeline(config)
+
 pipeline.run(city_graph)
 
 ##############

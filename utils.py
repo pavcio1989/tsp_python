@@ -1,7 +1,10 @@
 import logging
 from functools import wraps
 import time
+import pandas as pd
+from typing import Dict
 
+from config import Config
 
 logger = logging.getLogger('tsp')
 
@@ -47,3 +50,36 @@ def timeit(func):
 
         return result, total_time
     return timeit_wrapper
+
+
+def create_comparison_table(routes: Dict):
+    rows_list = []
+    for key in routes.keys():
+        dict1 = {}
+        dict1.update([
+            ("algorithm_name", key),
+            ("execution_time", routes[key]["exec_time"]),
+            ("total_distance", routes[key]["distance"])
+        ])
+        rows_list.append(dict1)
+    df = pd.DataFrame(rows_list)
+    logger.info(f"---- Comparison table:\n {df}")
+
+    return df
+
+
+def create_plots_to_html(routes: Dict, output_folder: str):
+
+    image_html = ''
+
+    for route_name, route_dict in routes.items():
+        fig = route_dict["object"].draw_route()
+        fig.write_image(f"{output_folder}/images/fig_{route_name}.png")
+
+        image_tag = '<img src="images/fig_' + route_name + '.png"> '
+        image_title = '<h4> Route algorithm: ' + route_name + ' </h4> '
+        image_content = '<div class="map">' + image_tag + '</div> '
+
+        image_html = image_html + image_title + image_content
+
+    return image_html

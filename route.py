@@ -15,10 +15,10 @@ logger = logging.getLogger('tsp')
 class Route:
     def __init__(self, city_graph: CityGraph):
         self.city_graph = city_graph
-        self.routes = {}
+        # self.routes = {}
 
-        self._route = []
-        self._distance = 1000000000
+        self.route = []
+        self.distance = 1000000000
 
     @timeit
     def greedy(self):
@@ -40,7 +40,8 @@ class Route:
         tour.append(cities[0])
         total_distance = total_distance + distances[cities.index(current)][cities.index(cities[0])]
 
-        self._register_route("greedy", tour, total_distance)
+        self.route = tour
+        self.distance = total_distance
 
         return
 
@@ -55,8 +56,6 @@ class Route:
             self.city_graph.city_list
         )
 
-        self._register_route("bruteforce", self._route, self._distance)
-
     @timeit
     def k_nearest(self, k=3):
         self._k_nearest_neighbours(
@@ -69,8 +68,6 @@ class Route:
             self.city_graph.city_list
         )
 
-        self._register_route("k_nearest", self._route, self._distance)
-
     @timeit
     def nx_tsp(self):
         dict_of_edges = get_edges_from_matrix(self.city_graph.distance_matrix)
@@ -81,10 +78,8 @@ class Route:
         tsp = nx.approximation.traveling_salesman_problem
         route = tsp(G, cycle=True)
 
-        self._route = [self.city_graph.city_list[i] for i in route]
-        self._distance = get_distance_from_route(route, self.city_graph.distance_matrix)
-
-        self._register_route("nx_tsp", self._route, self._distance)
+        self.route = [self.city_graph.city_list[i] for i in route]
+        self.distance = get_distance_from_route(route, self.city_graph.distance_matrix)
 
         return
 
@@ -92,9 +87,9 @@ class Route:
         if not remaining:
             # Add distance of returning to initial point
             final_weight = weight + graph[city_list.index(city_list[0])][city_list.index(vertex)]
-            if final_weight < self._distance:
-                self._distance = final_weight
-                self._route = path
+            if final_weight < self.distance:
+                self.distance = final_weight
+                self.route = path
         else:
             for i in remaining:
                 new_path = path + [i]
@@ -112,9 +107,9 @@ class Route:
         if not remaining:
             # Add distance of returning to initial point
             final_weight = weight + graph[city_list.index(city_list[0])][city_list.index(vertex)]
-            if final_weight < self._distance:
-                self._distance = final_weight
-                self._route = path
+            if final_weight < self.distance:
+                self.distance = final_weight
+                self.route = path
         else:
 
             iter_remaining = remaining
@@ -139,8 +134,10 @@ class Route:
     def draw_route(self):
         _, df_for_drawing = self._reshaped_dfs()
         fig = px.line(df_for_drawing, x="latitude", y="longitude", text="city")
-        fig.show()
+        # fig.show()
+        return fig
 
+    # TODO: Geopandas version
     def draw_route_gpd(self, country_name):
         df_original, df_for_drawing = self._reshaped_dfs()
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -162,25 +159,13 @@ class Route:
             'longitude': self.city_graph.city_longitudes}
         )
 
-        if self._route[0] != self._route[-1]:
-            new_index = [self.city_graph.city_list.index(x) for x in self._route + [self.city_graph.city_list[0]]]
+        if self.route[0] != self.route[-1]:
+            new_index = [self.city_graph.city_list.index(x) for x in self.route + [self.city_graph.city_list[0]]]
         else:
-            new_index = [self.city_graph.city_list.index(x) for x in self._route]
+            new_index = [self.city_graph.city_list.index(x) for x in self.route]
 
         df_reordered = df.copy().reindex(new_index)
         return df, df_reordered
-
-    def _register_route(self, name, route, distance):
-        self.routes[name] = {}
-        self.routes[name]["route"] = route
-        self.routes[name]["distance"] = distance
-
-        return
-
-    def register_execution_time(self, name, exec_time):
-        self.routes[name]["exec_time"] = exec_time
-
-        return
 
     def create_comparison_table(self):
         rows_list = []
@@ -217,4 +202,3 @@ class Route:
         # Writing the file
         with open(f"{output_folder}/report.html", "w+") as file:
             file.write(html)
-

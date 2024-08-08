@@ -6,6 +6,6 @@ data:
     coord: coord.txt
     distance_matrix: distance_matrix.txt
     best_tour: best_tour.txt
-  max_nodes: 18
+  max_nodes: 11
   output_folder: data/output
 
