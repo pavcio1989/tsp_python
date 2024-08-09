@@ -22,6 +22,18 @@ class Route:
 
     @timeit
     def greedy(self):
+        """
+        Implementation of greedy algorithm of finding best route.
+
+        Greedy algorithm is based on the following logic:
+        1. Start from the first city on the list as origin city (and first city on the route)
+        2. From the rest of available cities, identify city with smallest distance to origin city
+        3. Define it as next city on the route and remove it from list of available cities
+        4. Set it as new origin city
+        5. Repeat points 2-4 until all cities are added to the route
+
+        :return: None
+        """
         cities = self.city_graph.city_list
         distances = self.city_graph.distance_matrix
 
@@ -47,6 +59,14 @@ class Route:
 
     @timeit
     def bruteforce(self):
+        """
+        Implementation of bruteforce algorithm of finding best route.
+
+        Bruteforce algorithm calculates routes of all permutations of available cities and defines best route \
+        as the one with the smallest total distance (with the first city on the list as the first city of the route).
+
+        :return: None
+        """
         self._bruteforce(
             self.city_graph.city_list[1:],
             self.city_graph.city_list[0],
@@ -58,6 +78,16 @@ class Route:
 
     @timeit
     def k_nearest(self, k=3):
+        """
+        Implementation of K nearest neighbours' algorithm of finding best route.
+
+        K nearest algorithm is a combination of greedy and bruteforce algorithms. It has similar graph-based \
+        implementation as bruteforce algorithm where only up to K closest cities to current origin city are considered \
+        as candidate for best route at each iteration.
+
+        :param k: Number of neighbour cities to analyze at each iteration
+        :return: None
+        """
         self._k_nearest_neighbours(
             k,
             self.city_graph.city_list[1:],
@@ -70,6 +100,11 @@ class Route:
 
     @timeit
     def nx_tsp(self):
+        """
+        NetworkX's implementation of algorithm solving TSP problem and finding best route.
+
+        :return: None
+        """
         dict_of_edges = get_edges_from_matrix(self.city_graph.distance_matrix)
 
         G = nx.Graph()
@@ -132,6 +167,11 @@ class Route:
         return
 
     def draw_route(self):
+        """
+        Visualize route as line graph on XY axis chart.
+
+        :return: Plotly Express figure object
+        """
         _, df_for_drawing = self._reshaped_dfs()
         fig = px.line(df_for_drawing, x="latitude", y="longitude", text="city")
         # fig.show()
@@ -166,39 +206,3 @@ class Route:
 
         df_reordered = df.copy().reindex(new_index)
         return df, df_reordered
-
-    def create_comparison_table(self):
-        rows_list = []
-        for key in self.routes.keys():
-            dict1 = {}
-            dict1.update([
-                ("algorithm_name", key),
-                ("execution_time", self.routes[key]["exec_time"]),
-                ("total_distance", self.routes[key]["distance"])
-            ])
-
-            rows_list.append(dict1)
-
-        df = pd.DataFrame(rows_list)
-
-        logger.info(f"---- Comparison table:\n {df}")
-
-        return df
-
-    def create_html_report(self, output_folder: str):
-        # writing HTML Content
-        heading = '<h1> Travelling Salesman Problem - implementations overview </h1>'
-        subheading = '<h2> Author: Paweł Pitera </h3>'
-
-        now = datetime.now()
-        current_time = now.strftime("%m/%d/%Y %H:%M:%S")
-        header = '<div class="top">' + heading + subheading + '</div>'
-        footer = '<div class="bottom"> <h3> This Report has been Generated on ' + current_time + ' </h3> </div> '
-        content = '<div class="table"> ' + self.create_comparison_table().to_html() + ' </div> '
-
-        # Concatenating everything to a single string
-        html = header + content + footer
-
-        # Writing the file
-        with open(f"{output_folder}/report.html", "w+") as file:
-            file.write(html)

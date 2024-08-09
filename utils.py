@@ -4,35 +4,29 @@ import time
 import pandas as pd
 from typing import Dict
 
-from config import Config
-
 logger = logging.getLogger('tsp')
 
 
 def get_edges_from_matrix(distance_matrix):
-    """Transforms distance matrix into a list of tuples where each tuple represents a single edge info.
-
-    Args:
-        distance_matrix: A list of lists containing distances between nodes/cities (symmetrical).
-
-    Returns:
-        A list of tuples.
-
     """
+    Transforms distance matrix into a list of tuples where each tuple represents a single edge info.
+
+    :param distance_matrix: List of lists containing distances between nodes/cities (symmetrical)
+    :return: List of tuples
+    """
+
     return [(i, j, distance_matrix[i][j]) for i in range(len(distance_matrix)) for j in range(len(distance_matrix)) if i < j]
 
 
 def get_distance_from_route(route, distance_matrix):
-    """Calculates total distance of input route to cover.
-
-    Args:
-        route: A list of integers being IDs of each city (starting from 0)
-        distance_matrix: A list of lists containing distances between nodes/cities (symmetrical).
-
-    Returns:
-        Integer representing total distance of input route
-
     """
+    Calculates total distance of input route to cover.
+
+    :param route: List of integers being IDs of each city (starting from 0)
+    :param distance_matrix: A list of lists containing distances between nodes/cities (symmetrical)
+    :return: Integer representing total distance of input route
+    """
+
     dist = 0
     for x in range((len(route) - 1)):
         dist += distance_matrix[route[x]][route[x + 1]]
@@ -53,6 +47,12 @@ def timeit(func):
 
 
 def create_comparison_table(routes: Dict):
+    """
+    Render routes information into Pandas dataframe format to be added into HTML report
+
+    :param routes: Dictionary containing routes parameter content from Pipeline class
+    :return: Pandas dataframe
+    """
     rows_list = []
     for key in routes.keys():
         dict1 = {}
@@ -69,7 +69,13 @@ def create_comparison_table(routes: Dict):
 
 
 def create_plots_to_html(routes: Dict, output_folder: str):
+    """
+    Visualize routes on chart and render them into HTML format to be added to the report.
 
+    :param routes: Dictionary containing routes parameter content from Pipeline class
+    :param output_folder: path to store outputs
+    :return: HTML-formatted references to routes maps
+    """
     image_html = ''
 
     for route_name, route_dict in routes.items():
