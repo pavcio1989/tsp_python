@@ -2,10 +2,10 @@ import logging
 from datetime import datetime
 import os
 
-from city_graph import CityGraph
-from route import Route
-from utils import create_comparison_table, create_plots_to_html
-from config import Config
+from tsp_python.entities.city_graph import CityGraph
+from tsp_python.entities.route import Route
+from tsp_python.utils.utils import create_comparison_table, create_plots_to_html
+
 
 logger = logging.getLogger('tsp')
 

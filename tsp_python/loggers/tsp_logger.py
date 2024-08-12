@@ -19,7 +19,7 @@ class TSPLogger:
             },
             handlers={
                 'default': {
-                    'level': level,
+                    'level': "INFO",
                     'formatter': 'standard',
                     'class': 'logging.StreamHandler',
                     'stream': 'ext://sys.stdout',  # Default is stderr

@@ -1,7 +1,7 @@
 import pandas as pd
 
-from data_loader import DataLoader
-from config import Config
+from tsp_python.data_manager.data_loader import DataLoader
+from tsp_python.config.config import Config
 
 
 class CityGraph:

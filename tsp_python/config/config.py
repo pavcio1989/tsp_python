@@ -3,7 +3,7 @@ import yaml
 
 class Config:
     def __init__(self):
-        with open('data.yml', 'r') as data_file:
+        with open('tsp_python/config/data.yml', 'r') as data_file:
             use_case = yaml.safe_load(data_file)
 
         self.use_case = use_case['data']['usecase']
@@ -16,7 +16,7 @@ class Config:
 
         self.output_folder = use_case['data']['output_folder']
 
-        with open('pipeline.yml') as pipeline_file:
+        with open('tsp_python/config/pipeline.yml') as pipeline_file:
             pipeline_config = yaml.safe_load(pipeline_file)
 
         self.algorithms = {}

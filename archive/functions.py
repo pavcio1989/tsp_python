@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import geopandas as gpd
 
-import config
+from tsp_python import config
 
 import plotly.io as pio
 pio.renderers.default = "browser"

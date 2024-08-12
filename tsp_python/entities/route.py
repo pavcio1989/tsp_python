@@ -4,10 +4,9 @@ import geopandas as gpd
 import pandas as pd
 import networkx as nx
 import logging
-from datetime import datetime
 
-from city_graph import CityGraph
-from utils import get_edges_from_matrix, get_distance_from_route, timeit
+from tsp_python.entities.city_graph import CityGraph
+from tsp_python.utils.utils import get_edges_from_matrix, get_distance_from_route, timeit
 
 logger = logging.getLogger('tsp')
 
